@@ -1,24 +1,68 @@
-import logo from './logo.svg';
-import './App.css';
+import { Box, Button, TextField } from "@mui/material";
+import { useState } from "react";
+import React from "react";
+import { TodoItems } from "./TodoItem";
 
 function App() {
+  const [todoInput, setTodoInput] = useState("");
+  const [todos, setTodos] = useState([]);
+
+  const onDeleteValue = (value) => {
+    const updatetodos = todos.filter((item) => item !== value);
+    setTodos(updatetodos);
+  };
+  const onUpdateTodo = (newTodoValue, index) => {
+    setTodos(todos.map((val, idx) => (idx === index ? newTodoValue : val)));
+  };
+
+  const onAddButtonClicked = () => {
+    if (todoInput) {
+      const isAdded = todos.includes(todoInput);
+      if (isAdded) {
+        alert("dmm");
+      } else {
+        setTodos([...todos, todoInput]);
+        setTodoInput("");
+      }
+    }
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <>
+      <Box
+        fontStyle={{ padding: 32 }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            margin: "10px",
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <TextField
+            id="outlined-basic"
+            label="Add your job"
+            variant="outlined"
+            value={todoInput}
+            onChange={(e) => setTodoInput(e.target.value)}
+          />
+        </Box>
+
+        <Button variant="outlined" onClick={onAddButtonClicked}>
+          Add
+        </Button>
+      </Box>
+      {todos.map((todo, index) => (
+        <TodoItems
+          value={todo}
+          onDelete={onDeleteValue}
+          onEdit={(value) => onUpdateTodo(value, index)}
+          key={index}
+        />
+      ))}
+    </>
   );
 }
 
